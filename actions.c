@@ -8,22 +8,10 @@ void action_add(DatabaseContext* ctx) {
 
     PassengerInfo info;
     input("Full name: ", info.name, 32);
-
-    char cabin[10];
-    input("Cabin number: ", cabin, 10);
-    info.cabin = (uint8_t)strtoul(cabin, NULL, 10);
-
-    char cabin_type[10];
-    input("Cabin type: ", cabin_type, 10);
-    info.cabin_type = (uint8_t)strtoul(cabin_type, NULL, 10);
-
-    char departure[10];
-    input("Departure port: ", departure, 10);
-    info.departure_port = (uint32_t)strtoul(departure, NULL, 10);
-
-    char arrival[10];
-    input("Arrival port: ", arrival, 10);
-    info.arrival_port = (uint32_t)strtoul(arrival, NULL, 10);
+    info.cabin = (uint8_t)int_input("Cabin number: ");
+    info.cabin_type = (uint8_t)int_input("Cabin type: ");
+    info.departure_port = int_input("Departure port: ");
+    info.arrival_port = int_input("Arrival port: ");
 
     ctx->entries = realloc(ctx->entries, (ctx->length + 1) * sizeof(PassengerInfo));
     if (!ctx->entries) {
@@ -37,17 +25,14 @@ void action_add(DatabaseContext* ctx) {
 }
 
 void action_del(DatabaseContext* ctx) {
-    char *answer[12];
-    input("Number: ", answer, 12);
-    uint32_t number = strtoul(answer, NULL, 10);
-
+    uint32_t number = int_input("Number: ");
     if (number >= ctx->length) {
         printf("Number is out of range\n");
         return;
     }
 
-    input("Are you sure to delete entry? [y/n]: ", answer, 12);
-
+    char answer[3];
+    input("Are you sure to delete entry? [y/n]: ", answer, 3);
     if (strcmp(answer, "y") != 0)
         return;
 
@@ -59,21 +44,34 @@ void action_del(DatabaseContext* ctx) {
     printf("Entry deleted\n");
 }
 
-void action_edit(DatabaseContext* ctx, uint32_t number) {
+void action_edit(DatabaseContext* ctx) {
+    uint32_t number = int_input("Number: ");
+    if (number >= ctx->length) {
+        printf("Number is out of range\n");
+        return;
+    }
 
+    PassengerInfo* info = &ctx->entries[number];
+    input("Full name: ", info->name, 32);
+    info->cabin = (uint8_t)int_input("Cabin number: ");
+    info->cabin_type = (uint8_t)int_input("Cabin type: ");
+    info->departure_port = int_input("Departure port: ");
+    info->arrival_port = int_input("Arrival port: ");
+
+    printf("Changes applied\n");
 }
 
 void print_table(uint32_t* numbers, PassengerInfo* entries, uint32_t count) {
     // number, name, cabin, cabin_type, departure, arrival
     const int width[] = {4, 32, 12, 12, 12, 12};
     const wchar_t *CORNER_LEFT_TOP = L"┌",
-                   *CORNER_LEFT_BOTTOM = L"└",
-                   *CORNER_RIGHT_TOP = L"┐",
-                   *CORNER_RIGHT_BOTTOM = L"┘",
-                   *HORIZONTAL = L"─",
-                   *VERTICAL = L"│",
-                   *T_TOP = L"┬",
-                   *T_BOTTOM = L"┴";
+                  *CORNER_LEFT_BOTTOM = L"└",
+                  *CORNER_RIGHT_TOP = L"┐",
+                  *CORNER_RIGHT_BOTTOM = L"┘",
+                  *HORIZONTAL = L"─",
+                  *VERTICAL = L"│",
+                  *T_TOP = L"┬",
+                  *T_BOTTOM = L"┴";
 
     wprintf(CORNER_LEFT_TOP);
     for (int i = 0; i < 6; ++i) {

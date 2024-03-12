@@ -63,7 +63,7 @@ int main(void) {
             } else if (strcmp(command, "del") == 0) {
                 action_del(&ctx);
             } else if (strcmp(command, "edit") == 0) {
-                action_edit(&ctx, 0);
+                action_edit(&ctx);
             } else if (strcmp(command, "search") == 0) {
                 action_search(&ctx);
             } else if (strcmp(command, "list") == 0) {
