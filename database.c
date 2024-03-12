@@ -1,18 +1,11 @@
 #include "database.h"
 
-#include <stdint.h>
-#include <stdio.h>
-#include <errno.h>
-#include <string.h>
-#include <stdlib.h>
-
-#define INITIAL_CAPACITY 10
 
 
 void new_database(DatabaseContext *ctx) {
     ctx->length = 0;
 
-    ctx->entries = malloc(sizeof(PassengerInfo) * INITIAL_CAPACITY);
+    ctx->entries = malloc(sizeof(PassengerInfo));
     if (!ctx->entries) {
         fprintf(stderr, "malloc failure: %s\n", strerror(errno));
         exit(EXIT_FAILURE);
@@ -24,7 +17,7 @@ void destroy_database(DatabaseContext* ctx) {
 }
 
 int read_database(DatabaseContext* ctx, FILE* db_file) {
-    if (fread(&ctx->length, sizeof(uint32_t), 1, db_file))
+    if (fread(&ctx->length, sizeof(uint32_t), 1, db_file) < 1)
         return 0;
 
     ctx->entries = malloc(sizeof(PassengerInfo) * ctx->length);
@@ -46,15 +39,24 @@ int write_database(DatabaseContext* ctx, FILE* db_file) {
     return 1;
 }
 
-void field_by_name(PassengerInfo *p, const char* name) {
+char* field_by_name(PassengerInfo *info, const char* name) {
+    char tmp[12];
     if (strcmp(name, "name") == 0) {
+        return info->name;
+    } else if (strcmp(name, "cabin") == 0) {
+        snprintf(tmp, 12, "%u", info->cabin);
+    } else if (strcmp(name, "cabin_type") == 0) {
+        snprintf(tmp, 12, "%u", info->cabin_type);
+    } else if (strcmp(name, "departure") == 0) {
+        snprintf(tmp, 12, "%u", info->departure_port);
+    } else if (strcmp(name, "arrival") == 0) {
+        snprintf(tmp, 12, "%u", info->arrival_port);
+    }
 
-    } else if (strcmp(name, "cabin"))
+    return tmp;
 }
 
-void field_by_number(PassengerInfo *p, int n) {
-    switch (n) {
-        case 1:
-            return p->name;
-    }
+char* field_by_number(PassengerInfo *info, int n) {
+    const char* mapping[] = {"name", "cabin", "cabin_type", "departure", "arrival"};
+    return field_by_name(info, mapping[n]);
 }

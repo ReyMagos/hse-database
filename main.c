@@ -61,7 +61,7 @@ int main(void) {
             if (strcmp(command, "add") == 0) {
                 action_add(&ctx);
             } else if (strcmp(command, "del") == 0) {
-                action_del(&ctx, 0);
+                action_del(&ctx);
             } else if (strcmp(command, "edit") == 0) {
                 action_edit(&ctx, 0);
             } else if (strcmp(command, "search") == 0) {
@@ -77,13 +77,17 @@ int main(void) {
 
         // Database saving dialog
         while (1) {
-            char *save_path[PATH_MAX];
+            char answer[PATH_MAX];
+            char* save_path = answer;
             if (ctx.path[0] == '\0') {
-                input("Where to save database: ", save_path, PATH_MAX);
+                input("Where to save database: ", answer, PATH_MAX);
             } else {
                 char msg[28 + PATH_MAX];
                 snprintf(msg, 28 + PATH_MAX, "Where to save database [%s]: ", ctx.path);
-                input(msg, save_path, PATH_MAX);
+                input(msg, answer, PATH_MAX);
+
+                if (save_path[0] == '\0')
+                    save_path = ctx.path;
             }
 
             FILE *db_file = fopen(save_path, "wb");
