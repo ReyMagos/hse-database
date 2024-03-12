@@ -1,5 +1,4 @@
 #include "actions.h"
-
 #include "utils.h"
 
 
@@ -21,13 +20,13 @@ void action_add(DatabaseContext* ctx) {
 
     ctx->entries[ctx->length] = info;
 
-    printf("Entry %d successfully added\n", ctx->length++);
+    success("Entry %d successfully added", ctx->length++);
 }
 
 void action_del(DatabaseContext* ctx) {
     uint32_t number = int_input("Number: ");
     if (number >= ctx->length) {
-        printf("Number is out of range\n");
+        wrong("Number is out of range");
         return;
     }
 
@@ -41,13 +40,13 @@ void action_del(DatabaseContext* ctx) {
     }
     --ctx->length;
 
-    printf("Entry deleted\n");
+    success("Entry deleted");
 }
 
 void action_edit(DatabaseContext* ctx) {
     uint32_t number = int_input("Number: ");
     if (number >= ctx->length) {
-        printf("Number is out of range\n");
+        wrong("Number is out of range");
         return;
     }
 
@@ -58,7 +57,7 @@ void action_edit(DatabaseContext* ctx) {
     info->departure_port = int_input("Departure port: ");
     info->arrival_port = int_input("Arrival port: ");
 
-    printf("Changes applied\n");
+    success("Changes applied");
 }
 
 void print_table(uint32_t* numbers, PassengerInfo* entries, uint32_t count) {
@@ -116,6 +115,20 @@ void print_table(uint32_t* numbers, PassengerInfo* entries, uint32_t count) {
 void action_search(DatabaseContext* ctx) {
     char* field[12];
     input("Field: ", field, 12);
+
+    const char* fields[] = {"name", "cabin", "cabin_type", "departure", "arrival"};
+    char exists = 0;
+    for (int i = 0; i < 5; ++i) {
+        if (strcmp(field, fields[i]) == 0) {
+            exists = 1;
+            break;
+        }
+    }
+
+    if (!exists) {
+        wrong("No such field exists");
+        return;
+    }
 
     char* value[32];
     input("Value: ", value, 32);

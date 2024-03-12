@@ -11,6 +11,17 @@
 #define PATH_MAX 256
 
 
+void print_help() {
+    printf("Available commands:\n"
+           "  add      Add entry to database\n"
+           "  del      Remove entry from database\n"
+           "  edit     Edit existing entry\n"
+           "  search   Search entries\n"
+           "  list     Prints table of entries\n"
+           "  exit     Save database and exit\n"
+           "  help     Prints this message\n");
+}
+
 int main(void) {
     // Disable stdout buffering to print without newline
     setbuf(stdout, NULL);
@@ -42,18 +53,12 @@ int main(void) {
             }
 
             fclose(db_file);
-            printf("Database loaded!\n");
+            success("Database loaded");
         }
 
-        printf("Available commands:\n"
-               "  add                      Add entry to database\n"
-               "  del <number>             Remove entry from database\n"
-               "  edit <number>            Edit existing entry\n"
-               "  search <field> <value>   Search entries\n"
-               "  list                     Print table of entries\n"
-               "  exit                     Save database and exit\n");
-
         // Main menu dialog
+        print_help();
+
         while (1) {
             char command[256];
             input("> ", command, 256);
@@ -70,8 +75,10 @@ int main(void) {
                 action_list(&ctx);
             } else if (strcmp(command, "exit") == 0) {
                 break;
+            } else if (strcmp(command, "help") == 0) {
+                print_help();
             } else {
-                fprintf(stderr, "Unknown command\n");
+                wrong("Unknown command");
             }
         }
 
@@ -104,7 +111,7 @@ int main(void) {
 
             fclose(db_file);
             destroy_database(&ctx);
-            printf("Database saved!\n");
+            success("Database saved");
             break;
         }
     }

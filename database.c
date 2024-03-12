@@ -1,7 +1,6 @@
 #include "database.h"
 
 
-
 void new_database(DatabaseContext *ctx) {
     ctx->length = 0;
 

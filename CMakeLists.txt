@@ -5,5 +5,3 @@ set(CMAKE_C_STANDARD 11)
 
 add_executable(hse_database main.c utils.h database.h database.c actions.h actions.c
         utils.c)
-
-add_executable(test test.c)
