@@ -23,6 +23,22 @@ void print_help() {
 }
 
 int main(void) {
+#ifdef MANUAL_INPUT
+    PassengerInfo passengers[2] = {
+            { "Andrey", 24, Luxury, 123, 321 },
+            { "Elizaveta", 24, Luxury, 123, 321 }
+    };
+
+    DatabaseContext ctx = {
+            .path = "/path/to/database.bin",
+            .length = 2,
+            .entries = passengers
+    };
+
+    FILE *db_file = fopen(ctx.path, "wb");
+    write_database(&ctx, db_file);
+    fclose(db_file);
+#else
     // Disable stdout buffering to print without newline
     setbuf(stdout, NULL);
 
@@ -115,6 +131,7 @@ int main(void) {
             break;
         }
     }
+#endif
 
     return 0;
 }
