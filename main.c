@@ -1,12 +1,11 @@
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
-#include <stdlib.h>
-#include <locale.h>
 
 #include "database.h"
 #include "actions.h"
 #include "utils.h"
+
 
 #define PATH_MAX 256
 
@@ -39,12 +38,6 @@ int main(void) {
     write_database(&ctx, db_file);
     fclose(db_file);
 #else
-    // Disable stdout buffering to print without newline
-    setbuf(stdout, NULL);
-
-    // Set locale to utf-8 to print unicode chars
-    setlocale(LC_ALL, "UTF-8");
-
     DatabaseContext ctx = { .path = (char[PATH_MAX]) {} };
 
     while (1) {
@@ -69,7 +62,7 @@ int main(void) {
             }
 
             fclose(db_file);
-            success("Database loaded");
+            printf("Database loaded\n");
         }
 
         // Main menu dialog
@@ -94,7 +87,7 @@ int main(void) {
             } else if (strcmp(command, "help") == 0) {
                 print_help();
             } else {
-                wrong("Unknown command");
+                printf("Unknown command\n");
             }
         }
 
@@ -127,11 +120,9 @@ int main(void) {
 
             fclose(db_file);
             destroy_database(&ctx);
-            success("Database saved");
+            printf("Database saved\n");
             break;
         }
     }
 #endif
-
-    return 0;
 }

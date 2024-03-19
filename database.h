@@ -1,7 +1,6 @@
 #ifndef HSE_DATABASE_DATABASE_H
 #define HSE_DATABASE_DATABASE_H
 
-#include <stdint.h>
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
@@ -16,18 +15,18 @@ typedef enum {
 
 typedef struct {
     char name[32];
-    uint8_t cabin;
+    unsigned cabin;
     CabinType cabin_type;
-    uint32_t departure_port;
-    uint32_t arrival_port;
+    unsigned departure_port;
+    unsigned arrival_port;
 } PassengerInfo;
 
-char* field_by_name(PassengerInfo *info, const char* name);
-char* field_by_number(PassengerInfo *p, int n);
+void field_by_name(PassengerInfo *info, const char* name, char* dest);
+void field_by_number(PassengerInfo *p, int n, char* dest);
 
 typedef struct {
     char* path;
-    uint32_t length;
+    unsigned length;
     PassengerInfo* entries;
 } DatabaseContext;
 

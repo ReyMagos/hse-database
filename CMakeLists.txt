@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.28)
+cmake_minimum_required(VERSION 3.8)
 project(hse_database C)
 
 set(CMAKE_C_STANDARD 11)

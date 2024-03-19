@@ -16,7 +16,7 @@ void destroy_database(DatabaseContext* ctx) {
 }
 
 int read_database(DatabaseContext* ctx, FILE* db_file) {
-    if (fread(&ctx->length, sizeof(uint32_t), 1, db_file) < 1)
+    if (fread(&ctx->length, sizeof(unsigned), 1, db_file) < 1)
         return 0;
 
     ctx->entries = malloc(sizeof(PassengerInfo) * ctx->length);
@@ -32,30 +32,27 @@ int read_database(DatabaseContext* ctx, FILE* db_file) {
 }
 
 int write_database(DatabaseContext* ctx, FILE* db_file) {
-    fwrite(&ctx->length, sizeof(uint32_t), 1, db_file);
+    fwrite(&ctx->length, sizeof(unsigned), 1, db_file);
     fwrite(ctx->entries, sizeof(PassengerInfo), ctx->length, db_file);
 
     return 1;
 }
 
-char* field_by_name(PassengerInfo *info, const char* name) {
-    char tmp[12];
+void field_by_name(PassengerInfo *info, const char* name, char* dest) {
     if (strcmp(name, "name") == 0) {
-        return info->name;
+        strcpy(dest, info->name);
     } else if (strcmp(name, "cabin") == 0) {
-        snprintf(tmp, 12, "%u", info->cabin);
+        snprintf(dest, 11, "%u", info->cabin);
     } else if (strcmp(name, "cabin_type") == 0) {
-        snprintf(tmp, 12, "%u", info->cabin_type);
+        snprintf(dest, 11, "%u", info->cabin_type);
     } else if (strcmp(name, "departure") == 0) {
-        snprintf(tmp, 12, "%u", info->departure_port);
+        snprintf(dest, 11, "%u", info->departure_port);
     } else if (strcmp(name, "arrival") == 0) {
-        snprintf(tmp, 12, "%u", info->arrival_port);
+        snprintf(dest, 11, "%u", info->arrival_port);
     }
-
-    return tmp;
 }
 
-char* field_by_number(PassengerInfo *info, int n) {
+void field_by_number(PassengerInfo *info, int n, char* dest) {
     const char* mapping[] = {"name", "cabin", "cabin_type", "departure", "arrival"};
-    return field_by_name(info, mapping[n]);
+    field_by_name(info, mapping[n], dest);
 }
